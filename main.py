@@ -36,11 +36,31 @@ if uploaded_file is not None: # условие, чтобы сайт streamlit н
     st.write(""" #### Здесь твой график
                         """)
 
-    choice_x = st.sidebar.selectbox('Выбери, что будет по оси x', options=df.columns)
-    choice_y = st.sidebar.selectbox('Выбери, что будет по оси y', options=df.columns)
+    choice_x = st.sidebar.selectbox('Выбери первую переменную', options=df.columns)
+    choice_y = st.sidebar.selectbox('Выбери вторую переменную', options=df.columns)
     
     fig, ax = plt.subplots()
-    sns.lineplot(data=df, x=choice_x, y=choice_y)
+    # в зависимости от типа данных, разный график: 
+    test = ''
+    if isinstance(df[choice_x].iloc[0], (int, float)):
+        test += 'i'
+    else:
+        test += 'o'
+    if isinstance(df[choice_y].iloc[0], (int, float)):
+        test += 'i'
+    else:
+        test += 'o'
+
+    if test == 'oo':
+        sns.countplot(data = df, x=choice_x)
+        sns.countplot(data = df, x=choice_y)
+        plt.xlabel(f'{choice_x}/{choice_y}')
+
+    elif test == 'oi' or test == 'io':
+        sns.barplot(data = df, x=choice_x, y=choice_y)
+    elif test == 'ii':
+        sns.scatterplot(data = df, x=choice_x, y=choice_y)
+    
     st.pyplot(fig)
 
     
